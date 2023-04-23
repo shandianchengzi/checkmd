@@ -38,6 +38,39 @@ def extractLinkFromFile(filepath):
         linkinfos.add(LinkInfo(link, filepath))
     return linkinfos
 
+def ignoreUrlDifference(item):
+    # ignore the unquote difference in url
+    item = urllib.parse.unquote(item)
+    # ignore the lower and upper difference in url
+    item = item.lower()
+    return item
+
+def checkRedirecSucuess(link, link_after):
+    enditem = ""
+    enditem_link = ""
+    # ignore if the param is same
+    try: 
+        pre, enditem = link_after.rsplit('?', 1)
+        pre_link, enditem_link = link.rsplit('?', 1)
+        if ignoreUrlDifference(enditem) == ignoreUrlDifference(enditem_link):
+            return True
+    except:
+        pass
+    # ignore if the end link is same
+    try:
+        pre, enditem = link_after.rsplit('/', 1)
+        pre_link, enditem_link = link.rsplit('/', 1)
+        # ignore the / in the end
+        if link_after[-1] == '/':
+            pre, enditem = link_after[:-1].rsplit('/', 1)
+        if link[-1] == '/':
+            pre_link, enditem_link = link[:-1].rsplit('/', 1)
+        if ignoreUrlDifference(enditem) == ignoreUrlDifference(enditem_link):
+            return True
+    except:
+        pass
+    return False
+
 def linkFilter(linkinfo):
     link = linkinfo.link
     # check whether is none
@@ -53,24 +86,8 @@ def linkFilter(linkinfo):
         if linkinfo.status[0] == 200:
             return False
         # ignore the successful redirection
-        try:
-            pre, enditem = linkinfo.status[1].rsplit('/', 1)
-            pre_link, enditem_link = link.rsplit('/', 1)
-            # ignore the / in the end
-            if linkinfo.status[1][-1] == '/':
-                pre, enditem = linkinfo.status[1][:-1].rsplit('/', 1)
-            if link[-1] == '/':
-                pre_link, enditem_link = link[:-1].rsplit('/', 1)
-            # ignore the unquote difference in url
-            enditem = urllib.parse.unquote(enditem)
-            enditem_link = urllib.parse.unquote(enditem_link)
-            # ignore the lower and upper difference in url
-            enditem = enditem.lower()
-            enditem_link = enditem_link.lower()
-            if enditem == enditem_link:
-                return False
-        except:
-            pass
+        if checkRedirecSucuess(link, linkinfo.status[1]):
+            return False
         return True
     # TODO: find out the relative path error
     else:

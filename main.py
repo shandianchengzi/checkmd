@@ -2,7 +2,7 @@ import globs
 import os
 from extractLnk import extractLinkFromRepo
 
-input_path = "pika"
+input_path = "TencentOS-tiny"
 
 if __name__ == "__main__":
     # TODO: add args parse

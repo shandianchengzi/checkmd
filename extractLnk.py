@@ -27,9 +27,12 @@ def extractLinkFromFile(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     linkinfos = set()
-    # Use the re module to match the link in the string
+    # 1. extract md url
     pattern = r'\]\((.*?)\)'
     links = set(re.findall(pattern, content))
+    # 2. extract html url
+    pattern = r'src="(.*?)"'
+    links |= set(re.findall(pattern, content))
     # add the filepath info
     for link in links:
         linkinfos.add(LinkInfo(link, filepath))

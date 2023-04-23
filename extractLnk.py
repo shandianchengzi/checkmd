@@ -45,7 +45,7 @@ def ignoreUrlDifference(item):
     item = item.lower()
     return item
 
-def checkRedirecSucuess(link, link_after):
+def checkRedirectSucuess(link, link_after):
     enditem = ""
     enditem_link = ""
     # ignore if the param is same
@@ -86,8 +86,9 @@ def linkFilter(linkinfo):
         if linkinfo.status[0] == 200:
             return False
         # ignore the successful redirection
-        if checkRedirecSucuess(link, linkinfo.status[1]):
-            return False
+        if str(linkinfo.status[0])[0] == '3':
+            if checkRedirectSucuess(link, linkinfo.status[1]):
+                return False
         return True
     # TODO: find out the relative path error
     else:

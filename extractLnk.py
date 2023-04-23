@@ -1,6 +1,7 @@
 import re
 import os
 import glob
+import urllib.parse
 from log import logByType
 from checkLink import checkUrl
 
@@ -48,6 +49,25 @@ def linkFilter(linkinfo):
         # ignore the success url
         if linkinfo.status[0] == 200:
             return False
+        # ignore the successful redirection
+        try:
+            pre, enditem = linkinfo.status[1].rsplit('/', 1)
+            pre_link, enditem_link = link.rsplit('/', 1)
+            # ignore the / in the end
+            if linkinfo.status[1][-1] == '/':
+                pre, enditem = linkinfo.status[1][:-1].rsplit('/', 1)
+            if link[-1] == '/':
+                pre_link, enditem_link = link[:-1].rsplit('/', 1)
+            # ignore the unquote difference in url
+            enditem = urllib.parse.unquote(enditem)
+            enditem_link = urllib.parse.unquote(enditem_link)
+            # ignore the lower and upper difference in url
+            enditem = enditem.lower()
+            enditem_link = enditem_link.lower()
+            if enditem == enditem_link:
+                return False
+        except:
+            pass
         return True
     # TODO: find out the relative path error
     else:

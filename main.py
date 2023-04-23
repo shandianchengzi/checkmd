@@ -2,7 +2,7 @@ import globs
 import os
 from extractLnk import extractLinkFromRepo
 
-input_path = "tke"
+input_path = "pika"
 
 if __name__ == "__main__":
     # TODO: add args parse

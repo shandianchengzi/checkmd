@@ -14,7 +14,8 @@ class LinkInfo:
         self.status = (0, "") # (status_code, status_text)
 
     def __hash__(self):
-        return hash((self.link, self.filepath))
+        # return hash((self.link, self.filepath))
+        return hash(self.link)
 
     def __eq__(self, other):
         return self.link == other.link and self.filepath == other.filepath
@@ -25,7 +26,11 @@ class LinkInfo:
 
 def extractLinkFromFile(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
-        content = f.read()
+        try:
+            content = f.read()
+        except UnicodeDecodeError as e:
+            logByType('error', "[{}] {}\n".format(filepath, e))
+            return set()
     linkinfos = set()
     # 1. extract md url
     pattern = r'\]\((.*?)\)'
@@ -75,12 +80,12 @@ def linkFilter(linkinfo):
     link = linkinfo.link
     # check whether is none
     if link == '':
-        logByType('error', 'find one empty link in md: %s\n' % linkinfo.filepath)
+        logByType('error', '[%s] find one empty link in md.\n' % linkinfo.filepath)
         return False
     # ignore the anchor
     if link[0] == '#': 
         return False
-    if link[0] == 'h':
+    if link[0:4] == 'http':
         linkinfo.status = checkUrl(link)
         # ignore the success url
         if linkinfo.status[0] == 200:
@@ -102,10 +107,11 @@ def extractLinkFromRepo(repopath):
     for file in markdown_files:
         # extract link from a file
         linkinfos = extractLinkFromFile(file)
-        for linkinfo in linkinfos:
-            # filte some special link
-            if linkFilter(linkinfo):
-                linkinfo.dumpStatus()
+        all_linkinfos |= linkinfos
+    for linkinfo in all_linkinfos:
+        # filte some special link
+        if linkFilter(linkinfo):
+            linkinfo.dumpStatus()
     return True
 
 

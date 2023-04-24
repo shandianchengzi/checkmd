@@ -19,7 +19,12 @@
 - [x] 检查网页链接失效
 - [x] 检查是否发生重定向并输出重定向前后的链接是否一致，可以通过检测文件名（最后一个斜杠后的值）是否一致来判断
 - [x] 提取src标签内的链接
+- [ ] 询问用户是否需要清空输出文件夹，如果清空则自动清空输出文件夹
+- [ ] 添加参数解析：
+  - [ ] output_path: set the output path by user.
+  - [ ] fp_filter: ignore some urls which have checked or no need to check.
+  - [ ] input_path: set the input path by user.
 - [ ] 检查相对路径失效
-- [ ] 失效链接加上 User Agent 进一步确认是否失效
+- [ ] 失效链接加上 User Agent 排除无 header 无法访问的 FP
 - [ ] 错别字检查
 - [ ] 编码格式与文件实际保存格式的一致性检查

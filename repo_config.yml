@@ -14,6 +14,8 @@ docs-online:
   output_path: docs-onlineouput
 pika:
   repo_link: https://github.com/OpenAtomFoundation/pika/tree/unstable
+  fp_filter:
+  - ^http://i\.imgur\.com/.*$
 OneOS:
   repo_link: https://gitee.com/cmcc-oneos/OneOS/tree/dev
 AliOS-Things:

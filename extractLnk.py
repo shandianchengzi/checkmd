@@ -2,6 +2,8 @@ import re
 import os
 import glob
 import urllib.parse
+import threading
+
 from log import logByType
 from checkLink import checkUrl
 import globs
@@ -129,17 +131,29 @@ def linkFilter(linkinfo):
         # Now: ignore the relative link
         return False
 
+def handleLinkCheck(linkinfos):
+    for linkinfo in linkinfos:
+        if linkFilter(linkinfo):
+            linkinfo.dumpStatus()
+
 def extractLinkFromRepo(repopath):
     logByType("debug_info", "[*] Start to extract links from all the .md files...\n")
     # find all the md file
     markdown_files = glob.glob(os.path.join(repopath, '**/*.md'), recursive=True)
+    threads = []
     for file in markdown_files:
         logByType("debug_info", f"[*] Start to extract links from {file}...\n")
         # extract link from a file
         linkinfos = extractLinkFromFile(file)
-        for linkinfo in linkinfos:
-            if linkFilter(linkinfo):
-                linkinfo.dumpStatus()
+        # start one check for one file (not one link because links are too many.)
+        thread = threading.Thread(target=handleLinkCheck, args=(linkinfos, ))
+        threads.append(thread)
+        thread.start()
+    # wait for all the check down
+    for t in threads:
+        t.join()
+    
+            
     logByType("debug_info", "[+] Check Done!\n")
     return True
 

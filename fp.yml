@@ -5,3 +5,4 @@ docs-online:
 - ^(?=.*?https://git.rt-thread.com/realthread/ide_bug_report).+$\n
 - ^(?=.*?https://baike.baidu.com/item).+$\n
 - ^(?=.*?https://download.slamtec.com/api/download/).+$\n
+- /document/site/development-tools/rtthread-studio/um/

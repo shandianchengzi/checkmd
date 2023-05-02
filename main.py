@@ -14,4 +14,6 @@ if __name__ == "__main__":
     # os.system("rm %s/*.txt" % globs.log_path)
     # TODO: add arg[fp_filter] to ignore some urls which have checked or no need to check.
     # TODO: add arg[input_path] to set the input path by user.
+    # TODO: add arg[a]
+    globs.possible_web_base_path = [input_path] # set default possible_web_base_path as the repo path.
     ret = extractLinkFromRepo(input_path)

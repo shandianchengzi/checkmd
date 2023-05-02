@@ -4,6 +4,7 @@ import glob
 import urllib.parse
 from log import logByType
 from checkLink import checkUrl
+import globs
 
 class LinkInfo:
     def __init__(self, link, filepath):
@@ -29,7 +30,7 @@ def extractLinkFromFile(filepath):
         try:
             content = f.read()
         except UnicodeDecodeError as e:
-            logByType('error', "[{}] {}\n".format(filepath, e))
+            logByType('error', "exist no-utf-8 char\t{}\t0\t{}\n".format(filepath, e))
             return set()
     linkinfos = set()
     # 1. extract md url
@@ -80,11 +81,12 @@ def linkFilter(linkinfo):
     link = linkinfo.link
     # check whether is none
     if link == '':
-        logByType('error', '[%s] find one empty link in md.\n' % linkinfo.filepath)
+        logByType('error', '""\t%s\t0\tfind one empty link in md.\n' % linkinfo.filepath)
         return False
     # ignore the anchor
     if link[0] == '#': 
         return False
+    # check usual link
     if link[0:4] == 'http':
         linkinfo.status = checkUrl(link)
         # ignore the success url
@@ -94,6 +96,27 @@ def linkFilter(linkinfo):
         if str(linkinfo.status[0])[0] == '3':
             if checkRedirectSucuess(link, linkinfo.status[1]):
                 return False
+        return True
+    # check web markdown
+    elif link[0] == '/':
+        linkinfo.status = (404, "Web File no found.")
+        possible_extra_end = ["html","md","xml","wxml","xml"]
+        possible_special_end = ["#", "?"]
+        # ignore the special end, eg: /rt-thread/README.md#Introduction
+        for end in possible_special_end:
+            if end in link:
+                link = link.split(end)[0]
+        # ignore the exist file
+        for base in globs.possible_web_base_path:
+            # no end but exists, ignore but think it is warning
+            if os.path.exists(os.path.join(base, "." + link)):
+                logByType('warning', '%s\t%s\t0\tfind with extra file end when web page.\n' % (link, linkinfo.filepath))
+                return False
+            # try to add extra end for file to check
+            else:
+                for end in possible_extra_end:
+                    if os.path.exists(os.path.join(base, "." + link + "." + end)):
+                        return False
         return True
     # TODO: find out the relative path error
     else:

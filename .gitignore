@@ -1,5 +1,9 @@
-TencentOS-tiny/
-output/*
+.vscode
+
+# The repo to check
+docs-online
+TencentOS-tiny
+*output
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

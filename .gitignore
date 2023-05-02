@@ -1,8 +1,12 @@
 .vscode
+nohup.out
 
 # The repo to check
 docs-online
 TencentOS-tiny
+AliOS-Things
+OneOS
+pika
 *output
 
 # Byte-compiled / optimized / DLL files

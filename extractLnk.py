@@ -11,12 +11,12 @@ class LinkInfo:
         # raw error link
         self.link = link
         # other link infos, for output more info to locate the error.
-        self.filepath = filepath
+        self.filepath = globs.config.repo_link + filepath.lstrip(globs.args.repo_path)
         self.status = (0, "") # (status_code, status_text)
 
     def __hash__(self):
         # return hash((self.link, self.filepath))
-        return hash(self.link)
+        return hash((self.link, self.filepath))
 
     def __eq__(self, other):
         return self.link == other.link and self.filepath == other.filepath
@@ -79,6 +79,10 @@ def checkRedirectSucuess(link, link_after):
 
 def linkFilter(linkinfo):
     link = linkinfo.link
+    # ignore the link in fp_filter
+    for fp_pattern in globs.config.fp_filter:
+        if re.match(fp_pattern, link):
+            return False
     # check whether is none
     if link == '':
         logByType('error', '""\t%s\t0\tfind one empty link in md.\n' % linkinfo.filepath)
@@ -107,10 +111,12 @@ def linkFilter(linkinfo):
             if end in link:
                 link = link.split(end)[0]
         # ignore the exist file
-        for base in globs.possible_web_base_path:
+        for base in globs.config.possible_web_base_path:
             # no end but exists, ignore but think it is warning
             if os.path.exists(os.path.join(base, "." + link)):
-                logByType('warning', '%s\t%s\t0\tfind with extra file end when web page.\n' % (link, linkinfo.filepath))
+                # only warning the file, not the dir
+                if os.path.isfile(os.path.join(base, "." + link)):
+                    logByType('warning', '%s\t%s\t0\tfind with extra file end when web page.\n' % (link, linkinfo.filepath))
                 return False
             # try to add extra end for file to check
             else:
@@ -124,17 +130,17 @@ def linkFilter(linkinfo):
         return False
 
 def extractLinkFromRepo(repopath):
-    all_linkinfos = set()
+    logByType("debug_info", "[*] Start to extract links from all the .md files...\n")
     # find all the md file
     markdown_files = glob.glob(os.path.join(repopath, '**/*.md'), recursive=True)
     for file in markdown_files:
+        logByType("debug_info", f"[*] Start to extract links from {file}...\n")
         # extract link from a file
         linkinfos = extractLinkFromFile(file)
-        all_linkinfos |= linkinfos
-    for linkinfo in all_linkinfos:
-        # filte some special link
-        if linkFilter(linkinfo):
-            linkinfo.dumpStatus()
+        for linkinfo in linkinfos:
+            if linkFilter(linkinfo):
+                linkinfo.dumpStatus()
+    logByType("debug_info", "[+] Check Done!\n")
     return True
 
 

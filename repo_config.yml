@@ -1,0 +1,20 @@
+docs-online:
+  fp_filter: # ignore some urls which have checked or no need to check.
+  - ^https://club\.rt-thread\.org/ask.*$
+  - ^https://www\.rt-thread\.org/qa.*$
+  - ^https://github\.com/RT-Thread-packages.*$
+  - ^https://git\.rt-thread\.com/realthread/ide_bug_report.*$
+  - ^https://baike\.baidu\.com/item.*$
+  - ^https://download\.slamtec\.com/api/download/.*$
+  - ^https://www2\.renesas\.cn/jp/zh/software-tool/flexible-software-package-fsp.*$
+  repo_link: https://www.rt-thread.org/document/site/# # add repo_link when output filepath
+  possible_web_base_path: # set default possible_web_base_path as the repo path.
+  - docs-online
+  - docs-online/development-tools/rtthread-studio/um
+  output_path: docs-onlineouput
+pika:
+  repo_link: https://github.com/OpenAtomFoundation/pika/tree/unstable
+OneOS:
+  repo_link: https://gitee.com/cmcc-oneos/OneOS/tree/dev
+AliOS-Things:
+  repo_link: https://github.com/alibaba/AliOS-Things/tree/master

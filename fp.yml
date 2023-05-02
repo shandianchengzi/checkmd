@@ -1,8 +1,0 @@
-docs-online:
-- ^(?=.*?https://club.rt-thread.org/ask).+$\n
-- ^(?=.*?https://www.rt-thread.org/qa).+$\n
-- ^(?=.*?https://github.com/RT-Thread-packages).+$\n
-- ^(?=.*?https://git.rt-thread.com/realthread/ide_bug_report).+$\n
-- ^(?=.*?https://baike.baidu.com/item).+$\n
-- ^(?=.*?https://download.slamtec.com/api/download/).+$\n
-- /document/site/development-tools/rtthread-studio/um/
